@@ -1,2 +1,5 @@
-# birdsapi
-Fullstack Training Basic Ruby
+# Basic Rails Project
+
+Fullstack training - Basic Ruby
+
+
