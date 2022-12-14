@@ -6,4 +6,10 @@ Rails.application.routes.draw do
   post '/birds', to: 'birds#create'
   patch '/birds/:id', to: 'birds#update'
   delete '/birds/:id', to: 'birds#delete'
+
+  get '/trees', to: 'trees#index'
+  get '/trees/:id', to: 'trees#show'
+  post '/trees', to: 'trees#create'
+  patch '/trees/:id', to: 'trees#update'
+  delete '/trees/:id', to: 'trees#delete'
 end
