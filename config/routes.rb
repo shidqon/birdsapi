@@ -12,4 +12,5 @@ Rails.application.routes.draw do
   post '/trees', to: 'trees#create'
   patch '/trees/:id', to: 'trees#update'
   delete '/trees/:id', to: 'trees#delete'
+  patch '/trees/:id/update_birds', to: 'trees#update_birds'
 end

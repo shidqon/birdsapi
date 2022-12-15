@@ -4,7 +4,7 @@ RSpec.describe "Trees", type: :request do
   let(:tree) { Tree.new(name: 'a tree', species: 'species 1', height: 2000) }
   let(:trees) { [ tree ] }
 
-  let(:bird) { Bird.new(name: 'a bird', description: 'a description') }
+  let(:bird) { Bird.create(name: 'a bird', description: 'a description') }
   let(:birds) { [ bird ] }
 
   describe "GET /trees" do
@@ -114,6 +114,25 @@ RSpec.describe "Trees", type: :request do
       it 'return success message' do
         delete '/trees/1'
         expect(JSON.parse(response.body)).to eq({ 'message' => 'tree deleted' })
+      end
+    end
+  end
+
+  describe "PATCH /trees/:id/update_birds" do
+    before do
+      allow(Tree).to receive(:find).with('1').and_return(tree)
+      allow(Bird).to receive(:find).with('1').and_return(bird)
+      allow_any_instance_of(Tree).to receive(:save!)
+    end
+
+    context 'successfull' do
+      it 'return a tree' do
+        patch '/trees/1/update_birds', :params => { bird_ids: [1] }
+        expect(JSON.parse(response.body)).to include({
+          'name' => 'a tree',
+          'species' => 'species 1',
+          'height' => 2000,
+        })
       end
     end
   end
