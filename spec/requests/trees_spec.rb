@@ -122,7 +122,15 @@ RSpec.describe "Trees", type: :request do
     before do
       allow(Tree).to receive(:find).with('1').and_return(tree)
       allow(Bird).to receive(:find).with('1').and_return(bird)
+      allow(Bird).to receive(:find).with('9').and_raise(ActiveRecord::RecordNotFound)
       allow_any_instance_of(Tree).to receive(:save!)
+    end
+
+    context 'bird not found' do
+      it 'return error message' do
+        patch '/trees/1/update_birds', :params => { bird_ids: [9] }
+        expect(JSON.parse(response.body)).to eq({ 'message' => "Couldn't find Bird with 'id'=[9]" })
+      end
     end
 
     context 'successfull' do
