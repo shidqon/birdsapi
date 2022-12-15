@@ -4,6 +4,9 @@ RSpec.describe "Birds", type: :request do
   let(:bird) { Bird.new(name: 'a bird', description: 'a description') }
   let(:birds) { [ bird ] }
 
+  let(:tree) { Tree.new(name: 'a tree', species: 'species 1', height: 2000) }
+  let(:trees) { [ tree ] }
+
   describe "GET /birds" do
     before do
       allow(Bird).to receive(:all).and_return(birds)
@@ -11,7 +14,33 @@ RSpec.describe "Birds", type: :request do
 
     it 'returns list of birds' do
       get '/birds'
-      expect(response.body).to eq(birds.to_json)
+      expect(JSON.parse(response.body)[0]).to include({
+        'name' => 'a bird',
+        'description' => 'a description',
+        'trees' => [],
+      })
+    end
+  end
+
+  describe "GET /birds/:id" do
+    it 'returns single bird' do
+      allow(Bird).to receive(:find).with('1').and_return(bird)
+
+      get '/birds/1'
+      expect(JSON.parse(response.body)).to include({
+        'name' => 'a bird',
+        'description' => 'a description',
+        'trees' => [],
+      })
+    end
+
+    it 'returns single bird with trees' do
+      bird_with_trees = bird
+      bird_with_trees.trees = trees
+      allow(Bird).to receive(:find).with('1').and_return(bird_with_trees)
+
+      get '/birds/1'
+      expect(JSON.parse(response.body)).to include(JSON.parse(bird_with_trees.to_json))
     end
   end
 

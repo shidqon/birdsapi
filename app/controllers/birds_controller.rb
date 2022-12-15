@@ -1,12 +1,12 @@
 class BirdsController < ApplicationController
   def index
     # Get all birds data from database and render it as JSON.
-    render json: Bird.all
+    render json: Bird.all.to_json(:include => :trees)
   end
 
   def show
     bird = Bird.find(params[:id])
-    render json: bird
+    render json: bird.to_json(:include => :trees)
   end
 
   def create

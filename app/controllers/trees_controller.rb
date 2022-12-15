@@ -1,12 +1,12 @@
 class TreesController < ApplicationController
   def index
     # Get all trees data from database and render it as JSON.
-    render json: Tree.all
+    render json: Tree.all.to_json(:include => :birds)
   end
 
   def show
     tree = Tree.find(params[:id])
-    render json: tree
+    render json: tree.to_json(:include => :birds)
   end
 
   def create
