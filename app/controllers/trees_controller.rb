@@ -25,13 +25,21 @@ class TreesController < ApplicationController
     return render_validation_error(tree.errors) if tree.invalid?
 
     tree.save!
-    render json: tree
+    render json: tree.to_json(:include => :birds)
   end
 
   def delete
     tree = Tree.find(params[:id])
     tree.delete
     render json: {message: 'tree deleted'}
+  end
+
+  def update_birds
+    tree = Tree.find(params[:id])
+    tree.bird_ids = params[:bird_ids]
+
+    tree.save!
+    render json: tree.to_json(:include => :birds)
   end
 
   def render_validation_error(errors)
@@ -49,6 +57,6 @@ class TreesController < ApplicationController
     
     # We require tree object to be present. With permit, we can filter what parameters we want.
     # In this case, we only want to have name and description parameters.
-    params.require(:tree).permit(:name, :species, :height)
+    params.require(:tree).permit(:name, :species, :height, :bird_ids)
   end
 end
