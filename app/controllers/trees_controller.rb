@@ -35,10 +35,15 @@ class TreesController < ApplicationController
   end
 
   def update_birds
-    tree = Tree.find(params[:id])
-    tree.bird_ids = params[:bird_ids]
+    begin
+      tree = Tree.find(params[:id])
+      tree.bird_ids = params[:bird_ids]
 
-    tree.save!
+      tree.save!
+    rescue StandardError => error
+      return render_error(error)
+    end
+
     render json: tree.to_json(:include => :birds)
   end
 
@@ -48,6 +53,11 @@ class TreesController < ApplicationController
     end
 
     render json: res, status: :unprocessable_entity
+  end
+
+  def render_error(error)
+    res = { message: error.message }
+    render json: res, status: :internal_server_error
   end
 
   def tree_params
